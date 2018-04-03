@@ -12,20 +12,17 @@
 
 #ifndef HEADER_H
 # define HEADER_H
-
-typedef struct	s_point
-{
-	int			x;
-	int			y;
-}				t_point;
+# include <stdlib.h>
 
 typedef	struct	s_tetro
 {
-	t_point		p1;
-	t_point		p2;
-	t_point		p3;
-	t_point		p4;
-	char 		symbol;
+	int				x[4];
+	int				y[4];
+	char			symbol;
+	struct s_tetro	*next;
 }				t_tetro;
+
+t_tetro		*lstnew(int *x, int *y, char c);
+void		lstadd(t_tetro *lst, int *x, int *y, char c);
 
 #endif
