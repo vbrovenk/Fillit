@@ -39,6 +39,10 @@ int		main(void)
 
 	lstadd(lst, x2, y2, 'B');
 	lstadd(lst, x3, y3, 'C');
+	lstclear(&lst);
 	show(lst);
+	if (lst == 0)
+		printf("clear\n");
+	system ("leaks a.out");
 	return (0);
 }

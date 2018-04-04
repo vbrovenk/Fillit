@@ -34,3 +34,12 @@ void		lstadd(t_tetro *lst, int *x, int *y, char c)
 		lst = lst->next;
 	lst->next = lstnew(x, y, c);
 }
+
+void		lstclear(t_tetro **lst)
+{
+	while ((*lst)->next)
+		lstclear(&(*lst)->next);
+	free(*lst);
+	*lst = 0;
+	lst = 0;
+}
