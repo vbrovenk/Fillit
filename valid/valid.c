@@ -40,7 +40,7 @@ void	ft_bzero(char *s, int n)
 		s[i] = '\0';
 }
 
-int		count_hashes(char *s)
+int		count_hashes(char *s) /* also checks valid symbols */ 
 {
 	int		i;
 	int		j;
@@ -66,6 +66,41 @@ int		count_hashes(char *s)
 	return (count);
 }
 
+int		valid_figure(char *buf)
+{
+	char	f[4][4];
+	int		i;
+	int		j;
+	int		n;
+
+	n = -1;
+	i = 0;
+	j = 0;
+	while(buf[++n])
+	{
+		if (n + 1 % 5 != 0)
+			f[i][j] = buf[n];
+		else
+		{
+			j++;
+			i = 0;
+		}
+		i++;
+	}
+	i = -1;
+	j = -1;
+	while (++i < 4)
+	{
+		j = 0;
+		while (++j < 4)
+		{
+			printf("%c ", f[i][j]);
+		}
+		printf("\n");
+	}
+	return (1);
+}
+
 void	file_to_list(int fd)
 {
 
@@ -84,8 +119,12 @@ void	file_to_list(int fd)
 		ft_bzero(skip, 1);
 		read(fd, skip, 1);
 		printf("%i\n", count_hashes(buf));
-		if (count_hashes(buf) != 4)
+		if (count_hashes(buf) != 4 || valid_figure(buf) != 1)
 			ft_error();
+		else
+			{
+				printf("OK\n");
+			}
 		//printf("%i\n", skip[0]);
 		if (skip[0] == '\0')
 			break ;
