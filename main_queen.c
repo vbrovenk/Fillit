@@ -11,102 +11,98 @@
 /* ************************************************************************** */
 
 #include <stdio.h>
+#define N 4
 
-int is_attacked(int row, int col, int board[4][4])
+void print_solution(int board[N][N])
+{
+	int x;
+	int y;
+
+	x = 0;
+	while (x < N)
+	{
+		y = 0;
+		while (y < N)
+		{
+			printf(" %d ", board[x][y]);
+			y++;
+		}
+		printf("\n");
+		x++;
+	}
+}
+
+int is_safe(int board[N][N], int row, int col)
 {
 	int x;
 	int y;
 
 	y = 0;
-	while (y < 4)
+	while (y < col)
 	{
 		if (board[row][y])
-			return (1);
+			return (0);
 		y++;
-	}
-	x = 0;
-	while (x < 4)
-	{
-		if (board[x][col])
-			return (1);
-		x++;
 	}
 	x = row;
 	y = col;
-	while (y >= 0 && x >= 0)
+	while (x >= 0 && y >= 0)
 	{
 		if (board[x][y])
-			return (1);
+			return (0);
+		x--;
 		y--;
-		x--;
 	}
 	x = row;
 	y = col;
-	while (y >= 0 && x >= 0)
+	while (x < N && y >= 0)
 	{
 		if (board[x][y])
-			return (1);
-		x--;
-		y++;
+			return (0);
+		x++;
+		y--;
 	}
-
-	return (0);
+	return (1);
 }
 
-int n_queens(int board[4][4], int N)
+int solveNQ(int board[N][N], int col)
 {
-	int i;
-	int j;
+	int row;
 
-	if (N == 0)
+	if (col >= N)
 		return (1);
-	i = 0;
-	while (i < N)
+	row = 0;
+	while (row < N)
 	{
-		j = 0;
-		while (j < N)
+		if (is_safe(board, row, col))
 		{
-			if (is_attacked(i, j, board))
-			{
-				j++;
-				continue ;
-			}
-			board[i][j] = 1;
-			if (n_queens(board, N - 1))
+			board[row][col] = 1;
+			if (solveNQ(board, col + 1))
 				return (1);
-			board[i][j] = 0;
-			j++;
+			board[row][col] = 0;
 		}
-		i++;
+		row++;
 	}
 	return (0);
 }
 
-int main()
+int solve()
 {
-	int board[4][4] = {
+	int board[N][N] = {
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0}
 	};
-	
-	// if (is_attacked(1, 1, board))
 
-	// 	printf("Attacked");
-	// else
-	// 	printf("NOT");
-	if (n_queens(board, 4))
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				printf(" %c ", board[i][j] + 48);
-			}
-			printf("\n");
-		}
-	}
+	if (solveNQ(board, 0) == 0)
+		return (0);
+	print_solution(board);
+	return (1);
+}
 
+int main()
+{
+	int isSolved = solve();
 	return (0);
 }
