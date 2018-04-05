@@ -27,7 +27,8 @@ void	ft_putstr(char *s)
 
 void	ft_error(void)
 {
-	ft_putstr("error\n");
+	printf("error\n");
+	//ft_putstr("error\n");
 	exit(1);
 }
 
@@ -56,47 +57,87 @@ int		count_hashes(char *s) /* also checks valid symbols */
 			if (s[5*i + j] == '#')
 				count++;
 			if (s[5*i + j] != '.' && s[5*i + j] != '#')
+			{
+				printf("unknown symbol\n");
 				ft_error();
+			}
 			j++;
 		}
 		if (s[5*i + j] != '\n')
+		{
+			printf("without end of line\n");
 			ft_error();
+		}
 		i++;
 	}
 	return (count);
 }
 
-int		valid_figure(char *buf)
+void	clean_neighbours(char **figure, int i, int j, int *hashes)
 {
-	char	f[4][4];
+	if (figure[i][j] == '#')
+	{
+		figure[i][j] = '.';
+		*hashes += 1;
+		if (i != 0)
+			clean_neighbours(figure, i - 1, j, hashes);
+		if (j != 3)
+			clean_neighbours(figure, i, j + 1, hashes);
+		if (i != 3)
+			clean_neighbours(figure, i + 1, j, hashes);
+		if (j != 0)
+			clean_neighbours(figure, i, j - 1, hashes);
+	}
+}
+
+char	**line_to_arr(char *buf)
+{
 	int		i;
 	int		j;
-	int		n;
+	char	**f;
 
-	n = -1;
+	i = -1;
+	f = (char**)malloc(sizeof(char*) * 4);
+	while (++i < 4)
+		f[i] = (char*)malloc(sizeof(char) * 4);
 	i = 0;
 	j = 0;
-	while(buf[++n])
+	while(buf[5*i + j])
 	{
-		if (n + 1 % 5 != 0)
-			f[i][j] = buf[n];
-		else
+		if (buf[5*i + j] == '\n')
 		{
-			j++;
-			i = 0;
+			i++;
+			j = 0;
+			continue ;
 		}
-		i++;
+		f[i][j] = buf[5*i + j];
+		j++;
 	}
+	return (f);
+}
+
+int		connected_hashes(char *buf)
+{
+	char	**f;
+	int		i;
+	int		j;
+	int		hashes;
+
+	f = line_to_arr(buf);
 	i = -1;
-	j = -1;
-	while (++i < 4)
+	while(++i < 4)
 	{
-		j = 0;
-		while (++j < 4)
+		j = -1;
+		while(++j < 4)
 		{
-			printf("%c ", f[i][j]);
+			if (f[i][j] == '#')
+			{
+				hashes = 0;
+				clean_neighbours(f, i, j, &hashes);
+				if (hashes != 4)
+					return (0);
+			}
 		}
-		printf("\n");
 	}
 	return (1);
 }
@@ -108,28 +149,40 @@ void	file_to_list(int fd)
 	char	skip[1];
 
 	if (fd == -1)
+	{
+		printf("unknown file\n");
 		ft_error();
+	}
 	while (1)
 	{
 		ft_bzero(buf, 20);
 		read(fd, buf, 20);
 		if (skip[0] == '\n' && buf[0] == '\0')
+		{
+			printf("unwanted end of line\n");
 			ft_error();
+		}
 		//printf("%s\n", buf);
 		ft_bzero(skip, 1);
 		read(fd, skip, 1);
-		printf("%i\n", count_hashes(buf));
-		if (count_hashes(buf) != 4 || valid_figure(buf) != 1)
+		//printf("%i\n", count_hashes(buf));
+		if (count_hashes(buf) != 4)
+		{
+			printf("there are not 4 hashes\n");
 			ft_error();
+		}
+
+		if (connected_hashes(buf) != 1)
+		{
+			printf("hashes are not connected\n");
+			ft_error();
+		}
 		else
-			{
-				printf("OK\n");
-			}
+			printf("OK\n");
 		//printf("%i\n", skip[0]);
 		if (skip[0] == '\0')
 			break ;
 	}
-	printf("OK\n");
 }
 
 int		main(int args, char **argv)
@@ -138,13 +191,15 @@ int		main(int args, char **argv)
 	int		fd;
 	if (args == 2)
 	{
-		//printf("%s\n", argv[1]);
 		fd = open(argv[1], fd);
 		file_to_list(fd);
 	
 	}
 	else
+	{
+		printf("without file\n");
 		ft_error();
+	}
 
 
 	return (0);
