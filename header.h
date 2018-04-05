@@ -24,5 +24,6 @@ typedef	struct	s_tetro
 
 t_tetro		*lstnew(int *x, int *y, char c);
 void		lstadd(t_tetro *lst, int *x, int *y, char c);
+void		lstclear(t_tetro **lst);
 
 #endif
