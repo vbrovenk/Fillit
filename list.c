@@ -39,7 +39,15 @@ void		lstclear(t_tetro **lst)
 {
 	while ((*lst)->next)
 		lstclear(&(*lst)->next);
+	lstdelone(lst);
+}
+
+void		lstdelone(t_tetro **lst)
+{
+	t_tetro	*buf;
+
+	buf = (*lst)->next;
 	free(*lst);
 	*lst = 0;
-	lst = 0;
+	*lst = buf;
 }

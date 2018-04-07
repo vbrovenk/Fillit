@@ -39,6 +39,7 @@ int		main(void)
 
 	lstadd(lst, x2, y2, 'B');
 	lstadd(lst, x3, y3, 'C');
+	//lstdelone(&(lst->next->next));
 	lstclear(&lst);
 	show(lst);
 	if (lst == 0)

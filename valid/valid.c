@@ -73,6 +73,11 @@ int		count_hashes(char *s) /* also checks valid symbols */
 	return (count);
 }
 
+void	put_to_array(int x, int y)
+{
+
+}
+
 void	clean_neighbours(char **figure, int i, int j, int *hashes)
 {
 	if (figure[i][j] == '#')
@@ -178,7 +183,20 @@ void	file_to_list(int fd)
 			ft_error();
 		}
 		else
-			printf("OK\n");
+		{
+			printf("OK\n"); /* adding to list */
+			// int i;
+			// int j;
+			// i = -1;
+			// while (++i < 4)
+			// {
+			// 	j = -1;
+			// 	while (++j < 4)
+			// 		printf("%c ", figure[i][j]);
+			// 	printf("\n");
+			// }
+
+		}
 		//printf("%i\n", skip[0]);
 		if (skip[0] == '\0')
 			break ;
@@ -189,9 +207,12 @@ int		main(int args, char **argv)
 {
 
 	int		fd;
+	// t_tetro	*lst;
+
 	if (args == 2)
 	{
 		fd = open(argv[1], fd);
+		// ft_lstadd(lst, )
 		file_to_list(fd);
 	
 	}
