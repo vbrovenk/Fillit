@@ -13,18 +13,6 @@
 #include "header.h"
 #include <stdio.h>
 
-void	show(t_tetro *lst)
-{
-	while (lst)
-	{
-		printf("(%i, %i), (%i, %i), (%i, %i), (%i, %i) %c\n",
-		lst->x[0], lst->y[0], lst->x[1], lst->y[1],
-		lst->x[2], lst->y[2], lst->x[3], lst->y[3],
-		lst->symbol);
-		lst = lst->next;
-	}
-}
-
 int		main(void)
 {
 	t_tetro *lst;
@@ -42,7 +30,7 @@ int		main(void)
 	lstadd(&lst, lstnew(x3, y3, 'C'));
 	lstdelone(&(lst->next));
 	// lstclear(&lst);
-	show(lst);
+	lstshow(lst);
 	if (lst == 0)
 		printf("clear\n");
 	// system ("leaks a.out");
