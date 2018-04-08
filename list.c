@@ -28,11 +28,19 @@ t_tetro		*lstnew(int *x, int *y, char c)
 	return (new);
 }
 
-void		lstadd(t_tetro *lst, int *x, int *y, char c)
+void		lstadd(t_tetro **lst, t_tetro *new)
 {
-	while (lst->next)
-		lst = lst->next;
-	lst->next = lstnew(x, y, c);
+	t_tetro		*tmp;
+
+	if (*lst == 0)
+	{
+		*lst = new;
+		return ;
+	}
+	tmp = *lst;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
 }
 
 void		lstclear(t_tetro **lst)

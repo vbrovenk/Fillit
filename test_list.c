@@ -35,15 +35,16 @@ int		main(void)
 	int y2[] = { 0, 1, 2, 3 };
 	int x3[] = { 0, 1, 1, 2 };
 	int y3[] = { 1, 0, 1, 0 };
-	lst = lstnew(x1, y1, 'A');
 
-	lstadd(lst, x2, y2, 'B');
-	lstadd(lst, x3, y3, 'C');
-	//lstdelone(&(lst->next->next));
-	lstclear(&lst);
+	lst = 0;
+	lstadd(&lst, lstnew(x1, y1, 'A'));
+	lstadd(&lst, lstnew(x2, y2, 'B'));
+	lstadd(&lst, lstnew(x3, y3, 'C'));
+	lstdelone(&(lst->next));
+	// lstclear(&lst);
 	show(lst);
 	if (lst == 0)
 		printf("clear\n");
-	system ("leaks a.out");
+	// system ("leaks a.out");
 	return (0);
 }
