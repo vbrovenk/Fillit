@@ -28,4 +28,8 @@ void		lstclear(t_tetro **lst);
 void		lstdelone(t_tetro **lst);
 void		lstshow(t_tetro *lst); // trash
 
+void		show_matrix(char **m, int size);
+char		**create_matrix(int size);
+int			put_to_matrix(t_tetro *elem, char **m, int size, int x, int y);
+
 #endif

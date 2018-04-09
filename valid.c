@@ -74,6 +74,24 @@ int		count_hashes(char *s) /* also checks valid symbols */
 	return (count);
 }
 
+void	replace_coordinats(int *x, int *y)
+{
+	while (x[0] * x[1] * x[2] * x[3] != 0)
+	{
+		x[0]--;
+		x[1]--;
+		x[2]--;
+		x[3]--;
+	}
+	while (y[0] * y[1] * y[2] * y[3] != 0)
+	{
+		y[0]--;
+		y[1]--;
+		y[2]--;
+		y[3]--;
+	}
+}
+
 t_tetro	*elem_creating(char *buf, char sym)
 {
 	int			n;
@@ -107,24 +125,8 @@ t_tetro	*elem_creating(char *buf, char sym)
 		}
 		j++;
 	}
+	replace_coordinats(x, y);
 	return (lstnew(x, y, sym));
-}
-
-void	clean_neighbours(char **figure, int i, int j, int *hashes)
-{
-	if (figure[i][j] == '#')
-	{
-		figure[i][j] = '.';
-		*hashes += 1;
-		if (i != 0)
-			clean_neighbours(figure, i - 1, j, hashes);
-		if (j != 3)
-			clean_neighbours(figure, i, j + 1, hashes);
-		if (i != 3)
-			clean_neighbours(figure, i + 1, j, hashes);
-		if (j != 0)
-			clean_neighbours(figure, i, j - 1, hashes);
-	}
 }
 
 char	**line_to_arr(char *buf)
@@ -153,6 +155,23 @@ char	**line_to_arr(char *buf)
 	return (f);
 }
 
+void	clean_neighbours(char **figure, int i, int j, int *hashes)
+{
+	if (figure[i][j] == '#')
+	{
+		figure[i][j] = '.';
+		*hashes += 1;
+		if (i != 0)
+			clean_neighbours(figure, i - 1, j, hashes);
+		if (j != 3)
+			clean_neighbours(figure, i, j + 1, hashes);
+		if (i != 3)
+			clean_neighbours(figure, i + 1, j, hashes);
+		if (j != 0)
+			clean_neighbours(figure, i, j - 1, hashes);
+	}
+}
+
 int		connected_hashes(char *buf)
 {
 	char	**f;
@@ -179,7 +198,7 @@ int		connected_hashes(char *buf)
 	return (1);
 }
 
-void	file_to_list(int fd, t_tetro *lst)
+void	file_to_list(int fd, t_tetro **lst)
 {
 	char	buf[20];
 	char	skip[1];
@@ -217,8 +236,8 @@ void	file_to_list(int fd, t_tetro *lst)
 		}
 		else
 		{
-			printf("OK\n"); /* adding to list */
-			lstadd(&lst, elem_creating(buf, ++sym));
+			// printf("OK\n");
+			lstadd(lst, elem_creating(buf, ++sym));
 		}
 		//printf("%i\n", skip[0]);
 		if (skip[0] == '\0')
@@ -228,23 +247,32 @@ void	file_to_list(int fd, t_tetro *lst)
 
 int		main(int args, char **argv)
 {
-
+	/* now you may gcc valid.c list.c algo.c */
 	int		fd;
 	t_tetro	*lst;
+	char	**matrix;
+	int		size;
 
 	if (args == 2)
 	{
-		fd = open(argv[1], fd);
+		fd = open(argv[1], O_RDONLY);
 		lst = 0;
-		file_to_list(fd, lst);
+		file_to_list(fd, &lst);
 		lstshow(lst);
+		size = 2;
+		matrix = create_matrix(size);
+		while (!put_to_matrix(lst, matrix, size, 0, 0))
+		{
+			printf("too small square\n");
+			size++;
+			matrix = create_matrix(size);
+			show_matrix(matrix, size);
+		}
 	}
 	else
 	{
 		printf("without file\n");
 		ft_error();
 	}
-
-
 	return (0);
 }

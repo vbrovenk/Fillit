@@ -62,19 +62,21 @@ int		put_to_matrix(t_tetro *elem, char **m, int size, int x, int y)
 {
 	int		i;
 
-	show_matrix(m ,size);
-	printf("putting %c to (%i, %i)\n", elem->symbol, x, y);
+	// show_matrix(m ,size);
+	// printf("putting %c to (%i, %i)\n", elem->symbol, x, y);
 	// if (elem == 0)
 	// 	return (1);
 	if (enable_position(elem, m, size, x, y))
 	{
-		printf("result: position enable\n");
+		// printf("result: position enable\n");
 		i = -1;
 		while (++i < 4)
 			m[elem->x[i] + x][elem->y[i] + y] = elem->symbol;
 		printf("filling %c\n", elem->symbol);
+		show_matrix(m, size);
 		if (elem->next == 0)
 			return (1);
+		printf("starting placing %c\n", elem->next->symbol);
 		if (!put_to_matrix(elem->next, m, size, 0, 0))
 		{
 			erase_elem(elem, m, size);
@@ -100,7 +102,7 @@ int		put_to_matrix(t_tetro *elem, char **m, int size, int x, int y)
 	}
 	else
 	{
-		printf("result: position IS NOT enable\n");
+		// printf("result: position IS NOT enable\n");
 		if (x == size - 1 && y == size - 1)
 		{
 			// printf("where is no place\n");
@@ -139,90 +141,3 @@ char	**create_matrix(int size)
 	return (m);
 }
 
-int		main(void)
-{
-	t_tetro *lst;
-	char	**matrix;
-	int		size;
-
-	int x1[] = { 0, 1, 2, 3 };
-	int y1[] = { 0, 0, 0, 0 };
-	/*		#...
-			#...
-			#...
-			#...	*/
-	int x2[] = { 0, 1, 2, 2 };
-	int y2[] = { 1, 1, 0, 1 };
-	/*		.#..
-			.#..
-			##..
-			....	*/
-	int x3[] = { 0, 1, 1, 2 };
-	int y3[] = { 1, 0, 1, 0 };
-	/*		.#..
-			##..
-			#...
-			....	*/
-	int x4[] = { 0, 0, 1, 2 };
-	int y4[] = { 0, 1, 0, 0 };
-	/*		##..
-			#...
-			#...
-			....	*/
-	int x5[] = { 0, 0, 1, 1 };
-	int y5[] = { 1, 2, 0, 1 };
-	/*		.##.
-			##..
-			....
-			....	*/
-	int x6[] = { 0, 0, 1, 1 };
-	int y6[] = { 0, 1, 0, 1 };
-	/*		##..
-			##..
-			....
-			....	*/
-
-	lst = 0;
-	// lstadd(&lst, lstnew(x3, y3, 'A'));
-	// lstadd(&lst, lstnew(x5, y5, 'B'));
-	// lstadd(&lst, lstnew(x2, y2, 'C'));
-	// lstadd(&lst, lstnew(x5, y5, 'D'));
-
-	// lstadd(&lst, lstnew(x1, y1, 'A'));
-	// lstadd(&lst, lstnew(x1, y1, 'B'));
-	// lstadd(&lst, lstnew(x1, y1, 'C'));
-	// lstadd(&lst, lstnew(x1, y1, 'D'));
-
-	// lstadd(&lst, lstnew(x1, y1, 'A'));
-	// lstadd(&lst, lstnew(x1, y1, 'B'));
-	// lstadd(&lst, lstnew(x1, y1, 'C'));
-
-	// lstadd(&lst, lstnew(x3, y3, 'A'));
-	// lstadd(&lst, lstnew(x2, y2, 'B'));
-	// lstadd(&lst, lstnew(x3, y3, 'C'));
-
-	lstadd(&lst, lstnew(x6, y6, 'A'));
-	lstadd(&lst, lstnew(x6, y6, 'B'));
-	lstshow(lst);
-	
-	size = 2;
-	matrix = create_matrix(size);
-	// int x = 0;
-	// int y = 3;
-	
-	// while (lst)
-	// {
-		while (!put_to_matrix(lst, matrix, size, 0, 0))
-		{
-			printf("too small square\n");
-			size++;
-			matrix = create_matrix(size);
-			show_matrix(matrix, size);
-		}
-		// lst = lst->next;
-		// put_to_matrix(lst, matrix, size, x, y);
-	// }
-	// printf("res: %d\n", enable_position(lst, matrix, size, x, y));
-	show_matrix(matrix, size);
-	return (0);
-}
