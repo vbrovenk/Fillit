@@ -12,11 +12,12 @@
 
 #include "header.h"
 
-static void	init(t_tetro **lst, t_coord *cell)
+static void	init(t_tetro **lst, t_coord *cell, int *size)
 {
 	*lst = 0;
 	cell->x = 0;
 	cell->y = 0;
+	*size = 2;
 }
 
 int			main(int args, char **argv)
@@ -30,9 +31,8 @@ int			main(int args, char **argv)
 	if (args == 2)
 	{
 		fd = open(argv[1], O_RDONLY);
-		init(&lst, &cell);
+		init(&lst, &cell, &size);
 		file_to_list(fd, &lst);
-		size = 2;
 		matrix = create_matrix(size);
 		while (!put_to_matrix(lst, matrix, size, cell))
 		{
@@ -42,6 +42,7 @@ int			main(int args, char **argv)
 		}
 		show_matrix(matrix, size);
 		lstclear(&lst);
+		close(fd);
 	}
 	else
 		ft_usage();

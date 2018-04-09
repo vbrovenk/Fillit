@@ -18,12 +18,14 @@ OBJ = $(SRC:.c=.o)
 
 CFLAGS = -Wall -Wextra -Werror
 
+HEADER = header.h
+
 all: $(NAME)
 
 $(NAME): $(OBJ)
 	gcc $(OBJ) -o $(NAME)
 
-%.o: %.c
+%.o: %.c $(HEADER)
 	gcc $(CFLAGS) -c $< -o $@
 
 clean:
