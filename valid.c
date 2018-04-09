@@ -123,6 +123,8 @@ t_tetro	*elem_creating(char *buf, char sym)
 	int			x[4];
 	int			y[4];
 
+	if (sym == 'Z' + 1)
+		ft_error();
 	i = 0;
 	j = 0;
 	n = 0;
@@ -326,6 +328,6 @@ int		main(int args, char **argv)
 		// printf("without file\n"); // USAGE!
 		ft_usage();
 	}
-	system("leaks a.out");
+	// system("leaks a.out");
 	return (0);
 }
