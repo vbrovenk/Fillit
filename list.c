@@ -11,26 +11,14 @@
 /* ************************************************************************** */
 
 #include "header.h"
-// #include <stdio.h>
-
-// void	lstshow(t_tetro *lst)
-// {
-// 	while (lst)
-// 	{
-// 		printf("(%i, %i), (%i, %i), (%i, %i), (%i, %i) %c\n",
-// 		lst->x[0], lst->y[0], lst->x[1], lst->y[1],
-// 		lst->x[2], lst->y[2], lst->x[3], lst->y[3],
-// 		lst->symbol);
-// 		lst = lst->next;
-// 	}
-// }
 
 t_tetro		*lstnew(int *x, int *y, char c)
 {
-	t_tetro		*new;
+	t_tetro	*new;
+	int		i;
 
 	new = (t_tetro*)malloc(sizeof(t_tetro));
-	int i = -1;
+	i = -1;
 	while (++i < 4)
 	{
 		new->x[i] = x[i];
@@ -43,7 +31,7 @@ t_tetro		*lstnew(int *x, int *y, char c)
 
 void		lstadd(t_tetro **lst, t_tetro *new)
 {
-	t_tetro		*tmp;
+	t_tetro	*tmp;
 
 	if (*lst == 0)
 	{
@@ -56,14 +44,7 @@ void		lstadd(t_tetro **lst, t_tetro *new)
 	tmp->next = new;
 }
 
-void		lstclear(t_tetro **lst)
-{
-	while ((*lst)->next)
-		lstclear(&(*lst)->next);
-	lstdelone(lst);
-}
-
-void		lstdelone(t_tetro **lst)
+static void	lstdelone(t_tetro **lst)
 {
 	t_tetro	*buf;
 
@@ -71,4 +52,11 @@ void		lstdelone(t_tetro **lst)
 	free(*lst);
 	*lst = 0;
 	*lst = buf;
+}
+
+void		lstclear(t_tetro **lst)
+{
+	while ((*lst)->next)
+		lstclear(&(*lst)->next);
+	lstdelone(lst);
 }

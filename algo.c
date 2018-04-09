@@ -11,22 +11,20 @@
 /* ************************************************************************** */
 
 #include "header.h"
-//#include <stdio.h>
 
-
-int		enable_position(t_tetro *elem, char **m, int size, int x, int y)
+static int	enable_position(t_tetro *elem, char **m, int size, t_coord cell)
 {
-	int 	i;
+	int	i;
 
 	i = -1;
 	while (++i < 4)
-		if (elem->x[i] + x >= size || elem->y[i] + y >= size ||
-		m[elem->x[i] + x][elem->y[i] + y] != '.')
+		if (elem->x[i] + cell.x >= size || elem->y[i] + cell.y >= size ||
+		m[elem->x[i] + cell.x][elem->y[i] + cell.y] != '.')
 			return (0);
 	return (1);
 }
 
-void	erase_elem(t_tetro *elem, char **m, int size)
+static void	erase_elem(t_tetro *elem, char **m, int size)
 {
 	int		i;
 	int		j;
@@ -39,59 +37,52 @@ void	erase_elem(t_tetro *elem, char **m, int size)
 			if (m[i][j] == elem->symbol)
 				m[i][j] = '.';
 	}
-	//printf("erasing %c\n", elem->symbol);
 }
 
-
-int		put_to_matrix(t_tetro *elem, char **m, int size, int x, int y)
+static void	shift_position(t_coord *cell, int size)
 {
-	int		i;
-
-	if (enable_position(elem, m, size, x, y))
+	if (cell->y == size - 1)
 	{
-		i = -1;
-		while (++i < 4)
-			m[elem->x[i] + x][elem->y[i] + y] = elem->symbol;
-		//printf("filling %c\n", elem->symbol);
-//		show_matrix(m, size);
+		cell->x++;
+		cell->y = 0;
+	}
+	else
+		cell->y++;
+}
+
+static void	fill(char **m, t_tetro *elem, t_coord cell)
+{
+	int i;
+
+	i = -1;
+	while (++i < 4)
+		m[elem->x[i] + cell.x][elem->y[i] + cell.y] = elem->symbol;
+}
+
+int			put_to_matrix(t_tetro *elem, char **m, int size, t_coord cell)
+{
+	t_coord	zero;
+
+	if (enable_position(elem, m, size, cell))
+	{
+		fill(m, elem, cell);
 		if (elem->next == 0)
 			return (1);
-		//printf("starting placing %c\n", elem->next->symbol);
-		if (!put_to_matrix(elem->next, m, size, 0, 0))
+		zero.x = 0;
+		zero.y = 0;
+		if (!put_to_matrix(elem->next, m, size, zero))
 		{
 			erase_elem(elem, m, size);
-			if (y == size - 1)
-			{
-				x++;
-				y = 0;
-			}
-			else
-				y++;
-			return(put_to_matrix(elem, m, size, x, y));
+			shift_position(&cell, size);
+			return (put_to_matrix(elem, m, size, cell));
 		}
 		return (1);
 	}
 	else
 	{
-		if (x == size - 1 && y == size - 1)
-		{
-			//printf("going back from %c\n", elem->symbol);
+		if (cell.x == size - 1 && cell.y == size - 1)
 			return (0);
-		}
-		else
-		{
-			if (y == size - 1)
-			{
-				x++;
-				y = 0;
-			}
-			else
-				y++;
-			return(put_to_matrix(elem, m, size, x, y));
-//			return (1);
-		}
-
+		shift_position(&cell, size);
+		return (put_to_matrix(elem, m, size, cell));
 	}
 }
-
-

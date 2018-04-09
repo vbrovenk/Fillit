@@ -12,7 +12,7 @@
 
 NAME = fillit
 
-SRC = algo.c valid.c list.c
+SRC = algo.c valid.c list.c error.c hashes.c main.c matrix.c
 
 OBJ = $(SRC:.c=.o)
 
