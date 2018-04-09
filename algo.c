@@ -11,23 +11,8 @@
 /* ************************************************************************** */
 
 #include "header.h"
-#include <stdio.h>
+//#include <stdio.h>
 
-void	show_matrix(char **m, int size)
-{
-	int		i;
-	int		j;
-
-	i = -1;
-	while(++i < size)
-	{
-		j = -1;
-		while (++j < size)
-			printf("%c ", m[i][j]);
-		printf("\n");
-	}
-	printf("\n");
-}
 
 int		enable_position(t_tetro *elem, char **m, int size, int x, int y)
 {

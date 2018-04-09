@@ -11,19 +11,19 @@
 /* ************************************************************************** */
 
 #include "header.h"
-#include <stdio.h>
+// #include <stdio.h>
 
-void	lstshow(t_tetro *lst)
-{
-	while (lst)
-	{
-		printf("(%i, %i), (%i, %i), (%i, %i), (%i, %i) %c\n",
-		lst->x[0], lst->y[0], lst->x[1], lst->y[1],
-		lst->x[2], lst->y[2], lst->x[3], lst->y[3],
-		lst->symbol);
-		lst = lst->next;
-	}
-}
+// void	lstshow(t_tetro *lst)
+// {
+// 	while (lst)
+// 	{
+// 		printf("(%i, %i), (%i, %i), (%i, %i), (%i, %i) %c\n",
+// 		lst->x[0], lst->y[0], lst->x[1], lst->y[1],
+// 		lst->x[2], lst->y[2], lst->x[3], lst->y[3],
+// 		lst->symbol);
+// 		lst = lst->next;
+// 	}
+// }
 
 t_tetro		*lstnew(int *x, int *y, char c)
 {

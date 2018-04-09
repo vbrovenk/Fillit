@@ -11,25 +11,48 @@
 /* ************************************************************************** */
 
 #include "header.h"
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdlib.h>
 
-#include <stdio.h>
+// #include <stdio.h>
+
+void	ft_putchar(char c)
+{
+	write (1, &c, 1);
+}
+
+void	show_matrix(char **m, int size)
+{
+	int		i;
+	int		j;
+
+	i = -1;
+	while(++i < size)
+	{
+		j = -1;
+		while (++j < size)
+			ft_putchar(m[i][j]);
+		ft_putchar('\n');
+	}
+}
 
 void	ft_putstr(char *s)
 {
 	int		i;
 
 	i = -1;
-	while(s[i])
-		write(1, &s[++i], 1);
+	while(s[++i])
+		ft_putchar(s[i]);
 }
 
 void	ft_error(void)
 {
 	// printf("error\n");
-	//ft_putstr("error\n");
+	ft_putstr("error\n");
+	exit(1);
+}
+
+void	ft_usage(void)
+{
+	ft_putstr("usage: ./fillit sample\n");
 	exit(1);
 }
 
@@ -59,14 +82,14 @@ int		count_hashes(char *s) /* also checks valid symbols */
 				count++;
 			if (s[5 * i + j] != '.' && s[5*i + j] != '#')
 			{
-				printf("unknown symbol\n");
+				// printf("unknown symbol\n");
 				ft_error();
 			}
 			j++;
 		}
 		if (s[5 * i + j] != '\n')
 		{
-			printf("without end of line\n");
+			// printf("without end of line\n");
 			ft_error();
 		}
 		i++;
@@ -97,15 +120,12 @@ t_tetro	*elem_creating(char *buf, char sym)
 	int			n;
 	int			i;
 	int			j;
-	int			*x;
-	int			*y;
+	int			x[4];
+	int			y[4];
 
 	i = 0;
 	j = 0;
 	n = 0;
-
-	x = (int*)malloc(sizeof(int) * 4);
-	y = (int*)malloc(sizeof(int) * 4);
 	while (5 * i + j < 20)
 	{
 		if (buf[5 * i + j] == '\n')
@@ -169,6 +189,16 @@ void	clean_neighbours(char **figure, int i, int j, int *hashes)
 	}
 }
 
+void	clear(char **m, int size)
+{
+	int		i;
+
+	i = -1;
+	while (++i < size)
+		free(m[i]);
+	free(m);
+}
+
 int		connected_hashes(char *buf)
 {
 	char	**f;
@@ -192,6 +222,7 @@ int		connected_hashes(char *buf)
 			}
 		}
 	}
+	clear(f, 4);
 	return (1);
 }
 
@@ -203,7 +234,7 @@ void	file_to_list(int fd, t_tetro **lst)
 
 	if (fd == -1)
 	{
-		printf("unknown file\n");
+		// printf("unknown file\n");
 		ft_error();
 	}
 	sym = 'A' - 1;
@@ -213,7 +244,7 @@ void	file_to_list(int fd, t_tetro **lst)
 		read(fd, buf, 20);
 		if (skip[0] == '\n' && buf[0] == '\0')
 		{
-			printf("unwanted end of line\n");
+			// printf("unwanted end of line\n");
 			ft_error();
 		}
 		//printf("%s\n", buf);
@@ -222,13 +253,13 @@ void	file_to_list(int fd, t_tetro **lst)
 		//printf("%i\n", count_hashes(buf));
 		if (count_hashes(buf) != 4)
 		{
-			printf("there are not 4 hashes\n");
+			// printf("there are not 4 hashes\n");
 			ft_error();
 		}
 
 		if (connected_hashes(buf) != 1)
 		{
-			printf("hashes are not connected\n");
+			// printf("hashes are not connected\n");
 			ft_error();
 		}
 		else
@@ -242,15 +273,7 @@ void	file_to_list(int fd, t_tetro **lst)
 	}
 }
 
-void	clear(char **m, int size)
-{
-	int		i;
 
-	i = -1;
-	while (++i < size)
-		free(m[i]);
-	free(m);
-}
 
 char	**create_matrix(int size)
 {
@@ -283,25 +306,26 @@ int		main(int args, char **argv)
 		fd = open(argv[1], O_RDONLY);
 		lst = 0;
 		file_to_list(fd, &lst);
-		lstshow(lst);
+		// lstshow(lst);
 		size = 2;
 		matrix = create_matrix(size);
 		//show_matrix(matrix, size);
-//		printf("result: %i\n", put_to_matrix(lst, matrix, size, 0, 0));
-		 while (!put_to_matrix(lst, matrix, size, 0, 0))
-		 {
-		 	//printf("too small square\n");
-		 	// clear(matrix, size);
-		 	size++;
-		 	matrix = create_matrix(size);
-		 	//show_matrix(matrix, size);
-		 }
+		while (!put_to_matrix(lst, matrix, size, 0, 0))
+		{
+			//printf("too small square\n");
+			clear(matrix, size);
+			size++;
+			matrix = create_matrix(size);
+			//show_matrix(matrix, size);
+		}
 		show_matrix(matrix, size);
+		lstclear(&lst);
 	}
 	else
 	{
-		printf("without file\n"); // USAGE!
-		ft_error();
+		// printf("without file\n"); // USAGE!
+		ft_usage();
 	}
+	system("leaks a.out");
 	return (0);
 }
