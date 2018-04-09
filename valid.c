@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "header.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -63,7 +64,7 @@ int		count_hashes(char *s) /* also checks valid symbols */
 			}
 			j++;
 		}
-		if (s[5*i + j] != '\n')
+		if (s[5 * i + j] != '\n')
 		{
 			printf("without end of line\n");
 			ft_error();
@@ -73,9 +74,40 @@ int		count_hashes(char *s) /* also checks valid symbols */
 	return (count);
 }
 
-void	elem_creating(char **f)
+t_tetro	*elem_creating(char *buf, char sym)
 {
+	int			n;
+	int			i;
+	int			j;
+	int			x[4];
+	int			y[4];
 
+	i = -1;
+	while (++i < 4)
+	{
+		x[i] = -1;
+		y[i] = -1;
+	}
+	i = 0;
+	j = 0;
+	n = 0;
+	while (5 * i + j < 20)
+	{
+		if (buf[5*i + j] == '\n')
+		{
+			i++;
+			j = 0;
+			continue ;
+		}
+		if (buf[5 * i + j] == '#')
+		{
+			x[n] = i;
+			y[n] = j;
+			n++;
+		}
+		j++;
+	}
+	return (lstnew(x, y, sym));
 }
 
 void	clean_neighbours(char **figure, int i, int j, int *hashes)
@@ -107,7 +139,7 @@ char	**line_to_arr(char *buf)
 		f[i] = (char*)malloc(sizeof(char) * 4);
 	i = 0;
 	j = 0;
-	while(5*i + j < 20)
+	while(5 * i + j < 20)
 	{
 		if (buf[5*i + j] == '\n')
 		{
@@ -147,17 +179,18 @@ int		connected_hashes(char *buf)
 	return (1);
 }
 
-void	file_to_list(int fd)
+void	file_to_list(int fd, t_tetro *lst)
 {
-
 	char	buf[20];
 	char	skip[1];
+	char	sym;
 
 	if (fd == -1)
 	{
 		printf("unknown file\n");
 		ft_error();
 	}
+	sym = 'A' - 1;
 	while (1)
 	{
 		ft_bzero(buf, 20);
@@ -185,17 +218,7 @@ void	file_to_list(int fd)
 		else
 		{
 			printf("OK\n"); /* adding to list */
-			// int i;
-			// int j;
-			// i = -1;
-			// while (++i < 4)
-			// {
-			// 	j = -1;
-			// 	while (++j < 4)
-			// 		printf("%c ", figure[i][j]);
-			// 	printf("\n");
-			// }
-
+			lstadd(&lst, elem_creating(buf, ++sym));
 		}
 		//printf("%i\n", skip[0]);
 		if (skip[0] == '\0')
@@ -207,14 +230,14 @@ int		main(int args, char **argv)
 {
 
 	int		fd;
-	// t_tetro	*lst;
+	t_tetro	*lst;
 
 	if (args == 2)
 	{
 		fd = open(argv[1], fd);
-		// ft_lstadd(lst, )
-		file_to_list(fd);
-	
+		lst = 0;
+		file_to_list(fd, lst);
+		lstshow(lst);
 	}
 	else
 	{
