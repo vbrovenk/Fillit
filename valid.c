@@ -55,9 +55,9 @@ int		count_hashes(char *s) /* also checks valid symbols */
 		j = 0;
 		while (j < 4)
 		{
-			if (s[5*i + j] == '#')
+			if (s[5 * i + j] == '#')
 				count++;
-			if (s[5*i + j] != '.' && s[5*i + j] != '#')
+			if (s[5 * i + j] != '.' && s[5*i + j] != '#')
 			{
 				printf("unknown symbol\n");
 				ft_error();
@@ -97,21 +97,18 @@ t_tetro	*elem_creating(char *buf, char sym)
 	int			n;
 	int			i;
 	int			j;
-	int			x[4];
-	int			y[4];
+	int			*x;
+	int			*y;
 
-	i = -1;
-	while (++i < 4)
-	{
-		x[i] = -1;
-		y[i] = -1;
-	}
 	i = 0;
 	j = 0;
 	n = 0;
+
+	x = (int*)malloc(sizeof(int) * 4);
+	y = (int*)malloc(sizeof(int) * 4);
 	while (5 * i + j < 20)
 	{
-		if (buf[5*i + j] == '\n')
+		if (buf[5 * i + j] == '\n')
 		{
 			i++;
 			j = 0;
@@ -149,7 +146,7 @@ char	**line_to_arr(char *buf)
 			j = 0;
 			continue ;
 		}
-		f[i][j] = buf[5*i + j];
+		f[i][j] = buf[5 * i + j];
 		j++;
 	}
 	return (f);
@@ -245,13 +242,41 @@ void	file_to_list(int fd, t_tetro **lst)
 	}
 }
 
+void	clear(char **m, int size)
+{
+	int		i;
+
+	i = -1;
+	while (++i < size)
+		free(m[i]);
+	free(m);
+}
+
+char	**create_matrix(int size)
+{
+	char	**m;
+	int		i;
+	int		j;
+
+	m = (char**)malloc(sizeof(char*) * size);
+	i = -1;
+	while (++i < size)
+	{
+		m[i] = (char*)malloc(sizeof(char) * size);
+		j = -1;
+		while (++j < size)
+			m[i][j] = '.';
+	}
+	return (m);
+}
+
 int		main(int args, char **argv)
 {
 	/* now you may gcc valid.c list.c algo.c */
-	int		fd;
-	t_tetro	*lst;
-	char	**matrix;
-	int		size;
+	int			fd;
+	t_tetro		*lst;
+	char		**matrix;
+	int			size;
 
 	if (args == 2)
 	{
@@ -261,17 +286,21 @@ int		main(int args, char **argv)
 		lstshow(lst);
 		size = 2;
 		matrix = create_matrix(size);
-		while (!put_to_matrix(lst, matrix, size, 0, 0))
-		{
-			printf("too small square\n");
-			size++;
-			matrix = create_matrix(size);
-			show_matrix(matrix, size);
-		}
+		//show_matrix(matrix, size);
+//		printf("result: %i\n", put_to_matrix(lst, matrix, size, 0, 0));
+		 while (!put_to_matrix(lst, matrix, size, 0, 0))
+		 {
+		 	//printf("too small square\n");
+		 	// clear(matrix, size);
+		 	size++;
+		 	matrix = create_matrix(size);
+		 	//show_matrix(matrix, size);
+		 }
+		show_matrix(matrix, size);
 	}
 	else
 	{
-		printf("without file\n");
+		printf("without file\n"); // USAGE!
 		ft_error();
 	}
 	return (0);
